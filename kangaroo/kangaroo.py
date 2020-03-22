@@ -6,10 +6,13 @@ import os
 
 # Complete the kangaroo function below.
 def kangaroo(x1, v1, x2, v2):
-    # print("{} {} {}".format((x1 - x2), (v2 - v1), (x1 - x2) % (v2 - v1)))
-    if x2 - x1 < 0 :
+
+    # print("{} {} {}".format(abs(x1 - x2), abs(v2 - v1), abs(x1 - x2) % abs(v2 - v1)))
+    if  x2 > x1 and v2 > v1 :
         return "NO"
-    elif (x1 - x2) % (v2 - v1) == 0 : #and (x1 - x2) > 0:
+    elif abs(v2 - v1) == 0:
+        return "NO"
+    elif ( abs(x1 - x2) % abs(v2 - v1) == 0 ) :
         return "YES"
     else :
         return "NO"
@@ -28,7 +31,7 @@ if __name__ == '__main__':
     v2 = int(x1V1X2V2[3])
 
     result = kangaroo(x1, v1, x2, v2)
-    print(result)
+    # print(result)
     fptr.write(result + '\n')
 
     fptr.close()
