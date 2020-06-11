@@ -15,10 +15,37 @@ import sys
 #  2. INTEGER_ARRAY b
 #
 
+def ckMode(a, i):
+    # print("{} {}".format(a, i))
+    if(a<i) :
+        return i%a == 0
+    else :
+        return a%i == 0
+
+
 def getTotalX(a, b):
-    return "{} {}".format(a, b)
+    #return "{} {}".format(a, b)
+    minA = min(a)
+    maxA = max(a)
+
+    minB = min(b)
+    maxB = max(b)
+
+    #print("A :[{} {}], B: [{} {}]".format(minA, maxA, minB, maxB))
+    out = []
+    for i in range(maxA, minB+1):
+        outCK = [ckMode(ax, i) for ax in a+b]
+        #print("{} : {} {}".format(outCK, any(outCK), i))
+        if all(outCK):
+            out.append(i)
+    # print("{}".format(out))
+
+    return len(out)
+
+
 
 if __name__ == '__main__':
+    # fptr = open(os.environ['OUTPUT_PATH'], 'w')
     fptr = open("./r/output/my.txt", 'w')
 
     first_multiple_input = input().rstrip().split()
