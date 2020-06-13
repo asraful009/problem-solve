@@ -8,7 +8,14 @@ import sys
 
 # Complete the birthday function below.
 def birthday(s, d, m):
-    
+    l = len(s)
+    for i in range(l):
+        sv = 0
+        for j in range(m):
+            print("{} {} {} {}".format(sv, i, j, s[i + j]))
+            if l < j:
+                break
+            sv += s[i + j]
     return 1
 
 if __name__ == '__main__':
