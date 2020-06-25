@@ -17,11 +17,18 @@ def migratoryBirds(arr):
         else :
             a[str(i)] = 1
         # print("a[{}] = {}".format(i, a[str(i)]))
+    # print("{}".format(a))
+    minMax = a[str(key)]
     for k, v in a.items():
-        if minMax < v and key < int(k):
+        # print("k:{} => v:{} [key:{} mm:{}] {} and {}".format(k, v, key, minMax, minMax <= v, int(k) < int(key)))
+        if minMax < v:
             minMax = v
             key = int(k)
-        # print("{} => {} [{} {}]".format(k, v, key, minMax))
+            # print("-----> k:{} => v:{} [key:{} mm:{}]".format(k, v, key, minMax))
+        elif minMax == v and int(k) < int(key):
+            minMax = v
+            key = int(k)
+            # print("-----> k:{} => v:{} [key:{} mm:{}]".format(k, v, key, minMax))
     # print("{} {}".format(key, minMax))
     return key
 
