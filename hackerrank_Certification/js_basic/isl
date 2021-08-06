@@ -1,0 +1,6 @@
+5
+add John 25
+add Robin 23
+getSize
+remove Robin
+getSize
