@@ -1,0 +1,8 @@
+Refund object created with amount 5000 and sender John
+Amount updated to 4000
+Sender updated to John B
+Refund object details - amount is 4000 and sender is John B
+Refund.prototype has property setAmount: false
+Refund.prototype has property getAmount: false
+Refund.prototype has property setSender: true
+Refund.prototype has property getSender: true
