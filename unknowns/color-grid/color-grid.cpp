@@ -27,18 +27,22 @@ class GridNode {
 class Grid {
   private:
     GridNode** nodes;
-    int size;
+    int weight, height;
 
     void travel(int index, string c, int color) {
-      if(index == this->size * this->size)
-      try {
+      // cout<<index<< " >> " <<(index < this->size * this->size) << " "<< (index >=0)<<endl;
+      if(index < this->weight * this->height && index >=0) {
         if(this->nodes[index]->color == -1 && this->nodes[index]->val.compare(c) == 0 ) {
           this->nodes[index]->color = color;
-
-          travel((index+1) , c, color);
+          // cout<< "travel: "<<(index+1) << " " << (index-1) <<" " << (index+this->size)<<" " << (index-this->size)<< endl;
+          // cout << "edge : "<< index << " right "<< ((index+1) % this->weight)<<endl;
+          // cout << "edge : "<< index << " left "<< ((index) % this->weight)<<endl;
+          if(((index+1) % this->weight)) travel((index+1) , c, color);
+          if(((index) % this->weight)) travel((index-1) , c, color);
+          travel((index + this->weight) , c, color);
+          travel((index - this->weight) , c, color);
         }
-      } catch(const std::exception& e) {
-        std::cerr << e.what() << '\n';
+
       }
     }
 
@@ -52,26 +56,30 @@ class Grid {
 
     void InputGrid() {
       string t = "";
-      cin>>this->size;
-      this->nodes = new GridNode*[this->size*this->size];
-      for(int i=0; i<this->size*this->size; i++) {
+      cin>>this->weight>> this->height;
+      this->nodes = new GridNode*[this->weight*this->height];
+      for(int i=0; i<this->weight*this->height; i++) {
         cin>>t;
         this->nodes[i] = new GridNode(t);
       }
     }
 
     void print() {
-      for(int i=0; i<this->size*this->size; i++) {
-        cout<< this->nodes[i]->to_string() << " ";
-        if((i+1)%this->size ==0)
+      for(int i=0; i<this->weight*this->height; i++) {
+        cout<< "("<<i<<")"<<this->nodes[i]->to_string() << " ";
+        if((i+1)%this->weight ==0)
           cout << endl;
       }
     }
 
-    void travel() {
-      for(int i=0; i<this->size*this->size; i++) {
-        travel(i, this->nodes[i]->val, 1);
+    int travel() {
+      int color = 0;
+      for(int i=0; i<this->weight*this->height; i++) {
+        if(this->nodes[i]->color == -1) {
+          travel(i, this->nodes[i]->val, ++color);
+        }
       }
+      return color;
     }
 
 
@@ -82,7 +90,7 @@ int main(int argc, char *argv[]) {
   grid->InputGrid();
   grid->print();
   cout<<"------------------------------------\n";
-  grid->travel();
+  cout<< grid->travel()<<endl;
   cout<<"------------------------------------\n";
   grid->print();
 
