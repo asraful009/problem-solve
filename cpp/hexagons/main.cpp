@@ -10,7 +10,7 @@ using namespace std;
 #define lineSize 0.2
 #define size .51
 #define srof3 1.73205080757
-#define gridN 12
+#define gridN 15
 
 void init() {
   glClearColor(0.961, 0.961, 0.961, 0.0);
@@ -72,11 +72,13 @@ void drawHexagon(float centerX, float centerY) {
 void display(void) {
   
   glClear(GL_COLOR_BUFFER_BIT);
-  drawGridLine();
-  drawGridPoint();
-  for(int i=1; i<=gridN; i++) {
-    for(int j=1; j<=gridN; j++) {
-      drawHexagon(srof3 * size * i, 1.5 * size * j);
+  // drawGridLine();
+  // drawGridPoint();
+  for(int i=0; i<=gridN; i++) {
+    for(int j=0; j<=gridN; j++) {
+      float shoves = 0;
+      if(j%2==0) shoves = srof3 * size / 2;
+      drawHexagon(srof3 * size * i  + shoves, 1.5 * size * j);
     }
   }
   glutSwapBuffers();
