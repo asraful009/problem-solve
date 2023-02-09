@@ -1,11 +1,14 @@
 
 #include <math.h>
+#include <vector>
 #include <GL/glut.h>
 
-#define pi 3.142857
-#define pointSize 5.5
+using namespace std;
+
+
+#define pointSize 3.5
 #define lineSize 0.2
-#define size .4
+#define size .51
 #define srof3 1.73205080757
 #define gridN 12
 
@@ -55,11 +58,24 @@ void drawGridLine() {
   }
 }
 
+void drawHexagon(float centerX, float centerY) {
+  glColor3f(0.427, 0.596, 0.525);
+  glPointSize(pointSize+0.71);
+  for(int i=0; i< 6;i++) {
+    float deg = 60.0 * (float) i - 30.0;
+    float red = M_PI/ 180.0f * deg;
+    glBegin(GL_POINTS);
+      glVertex3f(centerX+ size * cos(red), centerY+ size * sin(red), 0.0f);
+    glEnd();
+  }
+}
+
 void display(void) {
   
   glClear(GL_COLOR_BUFFER_BIT);
   drawGridLine();
   drawGridPoint();
+  drawHexagon(srof3 * size +0, 1.5 * size + 0);
   glutSwapBuffers();
 }
 
