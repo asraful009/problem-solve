@@ -107,6 +107,7 @@ int main() {
     }
     
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
 
     std::cout<< "GL_VERSION :" << glGetString(GL_VERSION)<< std::endl;
     std::cout<< "GL_RENDERER :" << glGetString(GL_RENDERER)<< std::endl;
@@ -142,15 +143,26 @@ int main() {
     
     ShaderProgramSource shaderProgramSource = 
         loadShaderProgram("shader/basic.shader");
-    std::cout<< "++++++++++++++++ Vertex   Source ++++++++++++++\n" << shaderProgramSource.vertexSource<<std::endl;
-    std::cout<< "++++++++++++++++ Fragment Source ++++++++++++++\n" << shaderProgramSource.fragmentSource<<std::endl;
+    // std::cout<< "++++++++++++++++ Vertex   Source ++++++++++++++\n" << shaderProgramSource.vertexSource<<std::endl;
+    // std::cout<< "++++++++++++++++ Fragment Source ++++++++++++++\n" << shaderProgramSource.fragmentSource<<std::endl;
 
     unsigned int shaderProgramIndex = 
         createShader(shaderProgramSource.vertexSource, shaderProgramSource.fragmentSource);
     std::cout<<"shaderProgramIndex: " <<shaderProgramIndex<<std::endl;
     glUseProgram(shaderProgramIndex);
-    /* Loop until the user closes the window */
+    
+    float r = 0.223, incrementalRate = 0.05f;
+    unsigned int colorUniformIndex = glGetUniformLocation(shaderProgramIndex, "u_Color");
+    if(colorUniformIndex != -1) 
+        glUniform4f(colorUniformIndex, r, 0.356, 0.392, 1.0);
+
     while (!glfwWindowShouldClose(window)) {
+        glUniform4f(colorUniformIndex, r, 0.356, 0.392, 1.0);
+        if(r > 1.0f) incrementalRate = -0.05f;
+        else if(r < 0.0f) incrementalRate = 0.05f;
+        
+        r+= incrementalRate;
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         glfwSwapBuffers(window);
         glfwPollEvents();
