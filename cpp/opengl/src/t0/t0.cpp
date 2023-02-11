@@ -1,7 +1,56 @@
 
 #include <iostream>
+#include <string>
+#include <sstream>
+#include <fstream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+struct ShaderProgramSource {
+    std::string vertexSource;
+    std::string fragmentSource;
+};
+
+static ShaderProgramSource loadShaderProgram(const std::string &filePath) {
+    enum class ESHADER_TYPE {
+        NONE = -1, VERTEX = 0, FRAGMENT = 1
+    };
+    std::ifstream stream(filePath);
+    std::string line;
+    ESHADER_TYPE shaderTypeMode = ESHADER_TYPE::NONE;
+    std::stringstream ss[2];
+
+    int lineIndex = 1;
+    // std::cout << "load Shader Source Code ..."<<std::endl;
+    while (getline(stream, line)) {
+        // std::cout
+        // << lineIndex++ 
+        // <<  "\t [ " 
+        //     << ( shaderTypeMode ==ESHADER_TYPE::VERTEX ? "VERTEX" 
+        //         : shaderTypeMode == ESHADER_TYPE::FRAGMENT ? "FRAGMENT" 
+        //         : shaderTypeMode == ESHADER_TYPE::NONE ? "NONE" : "UNKNOWN" 
+        //     )
+        //     << " ]: " 
+        // << line << std::endl;
+        if(line.find("#shader") != std::string::npos) {
+            if(line.find("vertex") != std::string::npos) {
+                shaderTypeMode = ESHADER_TYPE::VERTEX;
+            } else if(line.find("fragment") != std::string::npos) {
+                shaderTypeMode = ESHADER_TYPE::FRAGMENT;
+            }
+        } else if(line.find("#end_shader") != std::string::npos) {
+            shaderTypeMode = ESHADER_TYPE::NONE;
+        } else {
+            if(shaderTypeMode == ESHADER_TYPE::VERTEX) {
+                ss[0] << line << "\n";
+            } else if(shaderTypeMode == ESHADER_TYPE::FRAGMENT) {
+                ss[1] << line << "\n";
+            }
+        }
+    }
+    std::cout << "Shader Source Code loaded"<<std::endl;
+    return { ss[0].str(), ss[1].str() };
+}
 
 static unsigned int complieShader(unsigned int type, const std::string &source) {
     unsigned int shaderIndex = glCreateShader(type);
@@ -66,55 +115,47 @@ int main() {
     if(err != GLEW_OK) std::cout<< glewGetErrorString(err)<<std::endl;
     std::cout<< "GLEW_VERSION :" <<glewGetString(GLEW_VERSION) << std::endl;
 
-    GLfloat trianglePointsArray[6] = {
+    float trianglePointsArray[] = {
         -0.5f, -0.5f,
-         0.0f,  0.5f,
-         0.5f, -0.5f
+         0.5f, -0.5f,
+         0.5f,  0.5f,
+        -0.5f,  0.5f
+    };
+
+    unsigned int indeies [] = {
+        0, 1, 2,
+        0, 3, 2,
     };
 
     unsigned int vertexBufferIndex;
     glGenBuffers(1, &vertexBufferIndex);
-    std::cout<< "vertexBufferIndex : " << vertexBufferIndex << std::endl;
-
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferIndex);
-    glBufferData(GL_ARRAY_BUFFER, 6* sizeof(GLfloat), trianglePointsArray, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 2 * 6 * sizeof(float), trianglePointsArray, GL_STATIC_DRAW);
+
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*2, 0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0);
+
+    unsigned int indeiesBufferIndex;
+    glGenBuffers(1, &indeiesBufferIndex);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indeiesBufferIndex);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned int), indeies, GL_STATIC_DRAW);
     
+    ShaderProgramSource shaderProgramSource = 
+        loadShaderProgram("shader/basic.shader");
+    std::cout<< "++++++++++++++++ Vertex   Source ++++++++++++++\n" << shaderProgramSource.vertexSource<<std::endl;
+    std::cout<< "++++++++++++++++ Fragment Source ++++++++++++++\n" << shaderProgramSource.fragmentSource<<std::endl;
 
-    std::string vertexShader = 
-        "#version 330 core\n"
-        "\n"
-        "layout(location = 0) in vec4 trianglePointsArrayPosition;\n"
-        "\n"
-        "void main() {\n"
-        "   gl_Position = trianglePointsArrayPosition;\n"
-        "}"
-        ;
-    std::string fragmentShader = 
-        "#version 330 core\n"
-        "\n"
-        "layout(location = 0) out vec4 color;\n"
-        "\n"
-        "void main() {\n"
-        "   color = vec4(0.0, 0.678, 0.709, 1.0);\n"
-        "}"
-        ;
-
-    unsigned int shaderProgramIndex = createShader(vertexShader, fragmentShader);
+    unsigned int shaderProgramIndex = 
+        createShader(shaderProgramSource.vertexSource, shaderProgramSource.fragmentSource);
     std::cout<<"shaderProgramIndex: " <<shaderProgramIndex<<std::endl;
     glUseProgram(shaderProgramIndex);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
-        /* Render here */
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        /* Swap front and back buffers */
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         glfwSwapBuffers(window);
-
-        /* Poll for and process events */
         glfwPollEvents();
     }
-
+    glDeleteProgram(shaderProgramIndex);
     glfwTerminate();
     return 0;
 }
