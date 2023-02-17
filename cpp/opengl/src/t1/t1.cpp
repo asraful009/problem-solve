@@ -2,10 +2,13 @@
 #include <string>
 #include <cmath>
 #include <bits/stdc++.h>
+#include "draw.hpp"
 
 struct Vertex {
   double x, y, z;
 };
+
+
 
 std::ostream& operator<<(std::ostream& stream, const Vertex& vertex) {
   stream << "{ \"x\": "<< vertex.x << ", \"y\": "<< vertex.y << ", \"z\":" << vertex.z << " }";
@@ -64,9 +67,9 @@ double binomialCoefficients(int n, int k) {
    return C[k];
 }
 
-void bezierCurves(const std::vector<Vertex*>& vertices, const double rate) {
-  if(rate <=0.0f) return;
+std::vector<Vertex*> bezierCurves(const std::vector<Vertex*>& vertices, const double rate) {
   std::vector<Vertex*> bcPoints;
+  if(rate <=0.0f) return bcPoints;
   std::vector<double> coeff;
   const int vertexSize = vertices.size();
   for (int index = 0; index < vertexSize; index++) {
@@ -84,13 +87,15 @@ void bezierCurves(const std::vector<Vertex*>& vertices, const double rate) {
     }
     bcPoints.push_back(bcPoint);
   }
-  std::cout<< bcPoints;
-//   console.log({ bCValues });
-};
+//  std::cout<< bcPoints;
+  return bcPoints;
+}
 
 
 int main() {
   std::vector<Vertex*> vertices;
   fileRead(vertices);
-  bezierCurves(vertices, .0001321f);
+  std::vector<Vertex*> bcPoints = bezierCurves(vertices, .0001321f);
+  std::cout<< bcPoints;
+  init(std::string("Bezier Curves"));
 }
