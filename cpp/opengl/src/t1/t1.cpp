@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <cmath>
 #include <bits/stdc++.h>
 
@@ -7,14 +8,15 @@ struct Vertex {
 };
 
 std::ostream& operator<<(std::ostream& stream, const Vertex& vertex) {
-  stream << "{ x: "<< vertex.x << ", y: "<< vertex.y << ", z:" << vertex.z << " }";
+  stream << "{ \"x\": "<< vertex.x << ", \"y\": "<< vertex.y << ", \"z\":" << vertex.z << " }";
   return stream;
 }
 
 std::ostream& operator<<(std::ostream& stream, const std::vector<double>& arr) {
   stream << "[";
+  std::cout.precision(32);
   for (double d: arr) {
-    stream << " "<< d << ",";
+    stream << " "<< std::fixed << d << ",";
   }
   stream << "]\n";
   return stream;
@@ -22,10 +24,11 @@ std::ostream& operator<<(std::ostream& stream, const std::vector<double>& arr) {
 
 std::ostream& operator<<(std::ostream& stream, const std::vector<Vertex* >& vertices) {
   stream << "[\n";
-  for (Vertex* v: vertices) {
-    stream << "  "<< *v << ",\n";
+  std::size_t size = vertices.size();
+  for (std::size_t i = 0; i < size-1; i++) {
+    stream << "  "<< *vertices[i] << ",\n";
   }
-  stream << "]\n";
+  stream << "  "<< *vertices[size-1] << "\n]\n";
   return stream;
 }
 
@@ -45,7 +48,7 @@ void fileRead(std::vector<Vertex* >& vertices) {
 
     //verify that the scores were stored correctly:
     
-      std::cout<<vertices;
+      // std::cout<<vertices;
 
     return;
 }
@@ -69,16 +72,19 @@ void bezierCurves(const std::vector<Vertex*>& vertices, const double rate) {
   for (int index = 0; index < vertexSize; index++) {
     coeff.push_back(binomialCoefficients(vertexSize - 1, index));
   }
-  std::cout<<coeff;
+  // std::cout<<coeff;
   for (double t = 0.0; t <= 1.0; t += rate) {
     Vertex* bcPoint = new Vertex({.0f, .0f ,.0f});
     for (int index = 0; index < vertexSize; index++) {
-      double p1t = std::pow((1.0 - t), (double)(vertexSize - index + 1));
-      double pt = std::pow(t, (double)(vertexSize - index + 1));
-      std::cout<< p1t<<", "<< pt <<"\n";
-      // bcPoint[pointIndex] += coeff[index] * p1t * pt * arr[index];
+      double p1t = std::pow((1.0 - t), (double)(vertexSize - index - 1));
+      double pt = std::pow(t, (double)(index));
+      bcPoint->x += coeff[index] * p1t * pt * vertices[index]->x;
+      bcPoint->y += coeff[index] * p1t * pt * vertices[index]->y;
+      //std::cout<< *bcPoint<< std::endl;
     }
+    bcPoints.push_back(bcPoint);
   }
+  std::cout<< bcPoints;
 //   console.log({ bCValues });
 };
 
@@ -86,5 +92,5 @@ void bezierCurves(const std::vector<Vertex*>& vertices, const double rate) {
 int main() {
   std::vector<Vertex*> vertices;
   fileRead(vertices);
-  bezierCurves(vertices, .021f);
+  bezierCurves(vertices, .0001321f);
 }
