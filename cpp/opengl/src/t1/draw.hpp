@@ -3,9 +3,9 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include <bits/stdc++.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "vertex_op.hpp"
 
 struct ShaderProgramSource {
     std::string vertexSource;
@@ -93,7 +93,7 @@ static unsigned int createShader(const std::string &vertexShader, const std::str
     return programIndex;
 }
 
-int init(const std::string wTitle, const std::vector<Vertex*>& vertices, GLenum) {
+int init(const std::string wTitle, const std::vector<Vertex*>& vertices, GLenum glEnum) {
     GLFWwindow* window;
 
     /* Initialize the library */
