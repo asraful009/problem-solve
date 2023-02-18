@@ -29,3 +29,14 @@ std::ostream& operator<<(std::ostream& stream, const std::vector<Vertex* >& vert
   stream << "  "<< *vertices[size-1] << "\n]\n";
   return stream;
 }
+
+std::ostream& operator<<(std::ostream& stream, const std::vector<Vertex* >& vertices) {
+  stream << "[\n";
+  std::size_t size = vertices.size();
+  for (std::size_t i = 0; i < size-1; i++) {
+    stream << "  "<< *vertices[i] << ",\n";
+  }
+  stream << "  "<< *vertices[size-1] << "\n]\n";
+  return stream;
+}
+
