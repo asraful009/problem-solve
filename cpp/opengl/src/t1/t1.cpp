@@ -65,6 +65,6 @@ int main() {
   std::vector<Vertex*> vertices;
   fileRead(vertices);
   std::vector<Vertex*> bcPoints = bezierCurves(vertices, .0001321f);
-  std::cout<< bcPoints;
+  // std::cout<< bcPoints;
   init(std::string("Bezier Curves"), bcPoints, GL_POINTS);
 }
