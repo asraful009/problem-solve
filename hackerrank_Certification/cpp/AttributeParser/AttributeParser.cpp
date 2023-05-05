@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <sstream>
 using namespace std;
 
 void getInput(int lineCount, vector<string> &ref)
@@ -13,24 +14,26 @@ void getInput(int lineCount, vector<string> &ref)
     getline(cin, temp);
     ref.push_back(temp);
   }
-  for (vector<string>::iterator it = ref.begin(); it != ref.end(); it++)
-    cout << *it << '\n';
-  cout << endl;
+  // for (vector<string>::iterator it = ref.begin(); it != ref.end(); it++)
+  //   cout << *it << '\n';
+  // cout << endl;
 }
-void split(const char *str)
+vector<string> split(const string &input, char delimiter)
 {
-  char *ptr;
-  ptr = strtok(*str, " ");
-  while (ptr != NULL)
-  {
-    cout << ptr << endl; // print the string token
-    ptr = strtoq(NULL, ' ');
-  }
-}
+  vector<std::string> result;
+  stringstream ss(input);
+  string item;
 
+  while (getline(ss, item, delimiter))
+  {
+    result.push_back(item);
+  }
+
+  return result;
+}
 void htmlParsing(const string &htmlLine)
 {
-  string rowLine = htmlLine.substr(1, htmlLine.size() - 2);
+  string rowLine = htmlLine.substr(1, htmlLine.length() - 2);
   cout << rowLine << "\n";
 }
 
@@ -38,7 +41,6 @@ int main()
 {
   int htmlCount, queryCount;
   cin >> htmlCount >> queryCount;
-  cout << htmlCount << " " << queryCount << "\n";
   vector<string> htmls;
   vector<string> queries;
   cin.ignore();
@@ -46,7 +48,9 @@ int main()
   getInput(queryCount, queries);
 
   for (vector<string>::iterator it = htmls.begin(); it != htmls.end(); it++)
+  {
     htmlParsing(*it);
-  cout << endl;
+  }
+
   return 0;
 }
