@@ -1,4 +1,6 @@
-4 3
+6 3
+<tag3 value="hi tag3" value1="hi2 tag3">
+</tag3>
 <tag1 value="HelloWorld">
 <tag2 name="Name1">
 </tag2>
