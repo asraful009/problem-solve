@@ -19,6 +19,19 @@ public:
     this->tag = tag;
     this->attributes = attributes;
   }
+
+  friend std::ostream &operator<<(std::ostream &os, const HtmlObj &obj)
+  {
+    os << "tag: " << obj.tag << "\n"
+       << "atrr: [\n";
+
+    for (const auto &entry : obj.attributes)
+    {
+      os << "attr: " << entry.first << ", value: " << entry.second << std::endl;
+    }
+    os << "]\n";
+    return os;
+  }
 };
 
 void splitAttributes(const string &attributes, map<string, string> &attributeMap)
@@ -77,8 +90,9 @@ vector<string> findTagAndAttributes(const string &rowLine)
   return tagAndAttr;
 }
 
-void htmlParser(const int index, const vector<string> &htmls, map<string, HtmlObj *> &mapHtml)
+void htmlParser(const int index, const vector<string> &htmls, const map<string, HtmlObj *> *const mapHtml)
 {
+  map<string, int> &mapHtmlRef = const_cast<std::map<std::string, int> &>(*mapHtml);
   string htmlLine = htmls[index];
   string rowLine = htmlLine.substr(1, htmlLine.length() - 2);
   cout << "[" << index << "] line: " << rowLine << "\n";
@@ -89,7 +103,7 @@ void htmlParser(const int index, const vector<string> &htmls, map<string, HtmlOb
   {
     splitAttributes(tagAndAttrs[1], attributeMap);
   };
-  mapHtml["df"] = new HtmlObj(tag, attributeMap);
+  mapHtmlRef[tag] = new HtmlObj(tag, attributeMap);
 
   if (htmls.size() > index + 1)
   {
@@ -106,7 +120,11 @@ int main()
   cin.ignore();
   getInput(htmlCount, htmls);
   getInput(queryCount, queries);
-  map<string, HtmlObj *> mapHtml;
-  htmlParser(0, htmls, mapHtml);
+  map<string, HtmlObj *> *mapHtml = new map<string, HtmlObj *>();
+  htmlParser(0, htmls, *mapHtml);
+  for (const auto &entry : *mapHtml)
+  {
+    std::cout << "key: " << entry.first << "=>" << *entry.second << "\n";
+  }
   return 0;
 }
