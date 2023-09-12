@@ -5,6 +5,7 @@
 #include <fstream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "vertex_op.hpp"
 
 struct ShaderProgramSource {
     std::string vertexSource;
@@ -92,7 +93,7 @@ static unsigned int createShader(const std::string &vertexShader, const std::str
     return programIndex;
 }
 
-int main() {
+int init(const std::string wTitle, const std::vector<Vertex*>& vertices, GLenum glEnum) {
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -100,7 +101,7 @@ int main() {
         return -1;
 
     
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(640, 480, wTitle.c_str(), NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
@@ -116,13 +117,6 @@ int main() {
     if(err != GLEW_OK) std::cout<< glewGetErrorString(err)<<std::endl;
     std::cout<< "GLEW_VERSION :" <<glewGetString(GLEW_VERSION) << std::endl;
 
-    float trianglePointsArray[] = {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.5f,  0.5f,
-        -0.5f,  0.5f
-    };
-
     unsigned int indeies [] = {
         0, 1, 2,
         0, 3, 2,
@@ -131,7 +125,7 @@ int main() {
     unsigned int vertexBufferIndex;
     glGenBuffers(1, &vertexBufferIndex);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferIndex);
-    glBufferData(GL_ARRAY_BUFFER, 2 * 6 * sizeof(float), trianglePointsArray, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 3 *  * sizeof(float), trianglePointsArray, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0);
@@ -158,12 +152,12 @@ int main() {
 
     while (!glfwWindowShouldClose(window)) {
         glUniform4f(colorUniformIndex, r, 0.356, 0.392, 1.0);
-        if(r > 1.0f) incrementalRate = -0.05f;
-        else if(r < 0.0f) incrementalRate = 0.05f;
+        // if(r > 1.0f) incrementalRate = -0.05f;
+        // else if(r < 0.0f) incrementalRate = 0.05f;
         
         r+= incrementalRate;
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(glEnum, 6, GL_UNSIGNED_INT, nullptr);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
