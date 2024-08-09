@@ -45,12 +45,13 @@ class SegmentTree<X> {
       generateSegmentTree(arr, mid + 1, end, index * 2 + 2);
       segmentTree[index] = computeLogic.compute(
           segmentTree[index * 2 + 1], segmentTree[index * 2 + 2]);
-      System.out.println(segmentTree[index]);
+      // System.out.println(segmentTree[index]);
     }
   }
 
   private X query(int l, int r, int node, int start, int end) {
-    System.out.println("l:" + l + " r:" + r + " node:" + node + " start:" + start + " end:" + end);
+    // System.out.println("l:" + l + " r:" + r + " node:" + node + " start:" + start
+    // + " end:" + end);
     if (r < start || l > end) {
       return boundaryValueLogic.getOutOfBoundaryValue();
     }
@@ -90,11 +91,32 @@ class SegmentTree<X> {
               Integer[] arr = Arrays.stream(line.split(" "))
                   .map(Integer::valueOf).toArray(Integer[]::new);
               System.out.println(Arrays.toString(arr));
-              SegmentTreeGenerateLogicFn<Integer> computeLogic = (a, b) -> a + b;
-              SegmentTreeOutOfBoundaryValueLogicFn<Integer> boundaryValueLogic = () -> 0;
+              SegmentTreeGenerateLogicFn<Integer> computeLogic = (a, b) -> {
+                if (a == null && b == null) {
+                  return null;
+                } else if (a == null) {
+                  return b;
+                } else if (b == null) {
+                  return a;
+                }
+                return a >= b ? a : b;
+              };
+              SegmentTreeOutOfBoundaryValueLogicFn<Integer> boundaryValueLogic = () -> null;
               SegmentTree<Integer> segmentTree = new SegmentTree<Integer>(arr, computeLogic, boundaryValueLogic);
               segmentTree.printSegmentTree();
-              System.out.println(segmentTree.query(2, 2));
+              line = br.readLine();
+              if (line != null) {
+                int q = Integer.parseInt(line);
+                for (int j = 0; j < q; j++) {
+                  line = br.readLine();
+                  if (line != null) {
+                    Integer[] arrRange = Arrays.stream(line.split(" "))
+                        .map(Integer::valueOf).toArray(Integer[]::new);
+                    System.out.println(Arrays.toString(arrRange));
+                    System.out.println(segmentTree.query(arrRange[0], arrRange[1]));
+                  }
+                }
+              }
             }
           }
         }
