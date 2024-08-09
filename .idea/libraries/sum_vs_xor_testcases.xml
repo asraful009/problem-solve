@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="sum-vs-xor-testcases">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/hackerrank_problem/sumXor/sum-vs-xor-testcases.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="the-minion-game-testcases">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/python_tutorial/TheMinionGame/the-minion-game-testcases.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
